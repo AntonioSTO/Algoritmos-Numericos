@@ -16,16 +16,20 @@ def cubic_spline_coefficients(x, y):
         z[i] = (alpha[i] - h[i-1]*z[i-1])/l[i]
 
     c = np.zeros(n+1)
+    b = np.zeros(n+1)
+    d = np.zeros(n+1)
+
     for j in range(n-1, -1, -1):
         c[j] = z[j] - mu[j]*c[j+1]
-        b_j = (y[j+1] - y[j])/h[j] - h[j]*(c[j+1] + 2*c[j])/3
-        d_j = (c[j+1] - c[j]) / (3 * h[j])
+        b[j] = (y[j+1] - y[j])/h[j] - h[j]*(c[j+1] + 2*c[j])/3
+        d[j] = (c[j+1] - c[j]) / (3 * h[j])
 
     coefficients = np.zeros((n, 4))
     for i in range(n):
-        coefficients[i] = [y[i], b_j, c[i], d_j]
+        coefficients[i] = [y[i], b[i], c[i], d[i]]
 
     return coefficients
+
 
 def cubic_spline_eval(x, coefficients, xi):
     yi = np.zeros_like(xi)
